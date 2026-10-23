@@ -1,0 +1,47 @@
+# Copiar como config/cita.yaml (fuera de git) y completar con tus datos reales.
+provincia: Madrid          # tal como aparece en la lista de provincias de la web
+oficina: "99"              # "99" = cualquier oficina
+tramite_policia: true      # true = lista "Trámites Policía Nacional"
+tramite: "POLICÍA-TOMA DE HUELLAS"   # basta con el inicio del nombre del trámite
+headless: false            # en modo headless el cortafuegos del sitio bloquea el acceso: dejar en false
+ventana_oculta: true       # abre la ventana fuera de la pantalla y oculta la app Chromium (como Cmd+H)
+pausa_bloqueo_min: 15      # si el sitio bloquea, esperar estos minutos antes de reintentar
+aviso_sin_citas_horas: 2   # "sin citas" se avisa en silencio como mucho cada N horas (0 = nunca)
+reintentos: 1              # si un paso falla, repite el recorrido completo esta cantidad de veces
+espera_reintento_s: 30     # espera antes de repetir (se duplica en cada intento; 0 si ya vio citas)
+aviso_parado_min: 30       # avisa si el agente estuvo más de esto sin arrancar (equipo dormido o apagado)
+# apagado: "01:00-07:00"   # apagado diario programado (p. ej. la instancia de AWS): no avisa de ese hueco
+min_entre_visitas_min: 5   # nunca dos visitas a la web con menos de esto (a los 4 min ya bloquearon una vez)
+ritmo:                     # cada cuánto revisa: lo aprende (ver src/cita_previa/aprendizaje.py)
+  minimo_s: 300            # nunca más seguido que cada 5 min (con visitas más seguidas el sitio bloqueó)
+  maximo_s: 1800
+  inicial_s: 300           # empieza en el mínimo
+  baja_s: 0                # sin errores mantiene el ritmo (con p. ej. 30 acelera 30 s por revisión completa)
+  sube_bloqueo: 1.25       # solo si respondes "Sí es bloqueo" en Telegram: ×1,25 y ese ritmo de piso 7 días
+minutos_codigo_sms: 8      # cuánto espera tu respuesta con el código SMS al reservar
+minutos_respuesta_campos: 8  # cuánto espera tu respuesta cuando la web pide un dato que no conoce
+navegador: chromium        # chromium = el de Playwright (en AWS, este); chrome = Google Chrome instalado
+con_clave: false           # false = "Presentación sin Cl@ve" (NIE, nombre y país); true = Cl@ve con certificado
+
+# Datos del solicitante (obligatorios sin Cl@ve)
+nie: ""                    # tal como aparece en tu tarjeta, p. ej. X1234567L
+nombre: ""                 # nombre y apellidos como en el NIE
+pais: ""                   # nacionalidad tal como aparece en la lista del sitio, en mayúsculas
+telefono: ""               # móvil español, sin +34 (aquí llega el SMS de confirmación)
+email: ""
+
+# Datos que la web pueda pedir y el código no conoce (id o name del campo → valor). Si falta alguno obligatorio,
+# el agente te lo pregunta por Telegram y recuerda tu respuesta (data/campos_aprendidos.json); aquí puedes
+# dejarlos puestos de antemano. Ejemplos:
+campos_extra: {}
+#  txtAnnoCitado: "1990"          # año de nacimiento (texto)
+#  txtFecha: "31/12/2026"         # fecha de caducidad de la tarjeta (texto)
+#  txtTipoTramite: "RENOVACION"   # desplegable: texto de la opción (o su valor)
+#  chkAcepto: true                # casilla: true / false
+#  rdbSexo: "H"                   # grupo de opciones: el value de la opción
+
+# Solo con con_clave: true. Certificado (.p12) preparado con: .venv/bin/python -m cita_previa.certificado RUTA.p12
+certificado:
+  archivo: data/certificado.p12
+  origenes:                # servidores de Cl@ve que piden el certificado (el log los muestra)
+    - https://pasarela-ident.clave.gob.es

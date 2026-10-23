@@ -1,0 +1,13 @@
+# Secretos y datos personales: nunca a git
+.env
+config/cita.yaml
+data/
+*.p12
+*.pfx
+
+.venv
+.venv.nosync/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+ESTADO.md

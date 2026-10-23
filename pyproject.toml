@@ -1,0 +1,29 @@
+[project]
+name = "cita-previa"
+version = "0.1.0"
+description = "Agente que busca y reserva la cita de toma de huellas (TIE) en la cita previa de extranjería"
+requires-python = ">=3.12"
+dependencies = [
+    "certifi>=2024.8",
+    "cryptography>=42",
+    "playwright>=1.48",
+    "python-dotenv>=1.0",
+    "pyyaml>=6.0",
+    "requests>=2.32",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+cita-previa = "cita_previa.run:main"
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+cita_previa = ["*.cjs"]
